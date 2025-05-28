@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculatrice Quantique - Eliezer Dzama MOTOKWAN</title>
+  <link rel="manifest" href="manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Variables pour le mode sombre */
+      --bg-gradient-dark: linear-gradient(135deg, #1a0033, #000000);
+      --main-text-color-dark: #00ffcc;
+      --accent-color-dark: #ff00cc;
+      --container-bg-dark: rgba(255, 255, 255, 0.05);
+      --container-border-dark: 1px solid rgba(0, 255, 204, 0.2);
+      --container-shadow-dark: 0 0 40px rgba(0, 255, 204, 0.5);
+      --result-bg-dark: rgba(0, 0, 0, 0.4);
+      --result-shadow-dark: inset 0 0 10px rgba(0, 255, 204, 0.3);
+      --math-display-color-dark: rgba(0, 255, 204, 0.7);
+      --button-bg-dark: linear-gradient(to bottom right, #003366, #000033);
+      --button-hover-dark: linear-gradient(to top left, #00ffcc, #0066ff);
+      --operator-bg-dark: linear-gradient(to bottom right, #ff00cc, #990099);
+      --operator-hover-dark: linear-gradient(to top left, #ff00cc, #ff66ff);
+      --function-bg-dark: linear-gradient(to bottom right, #663399, #330066);
+      --function-hover-dark: linear-gradient(to top left, #9966cc, #663399);
+      --calc-btn-bg-dark: linear-gradient(to bottom right, #00ccff, #0066ff);
+      --calc-btn-hover-dark: linear-gradient(to top left, #00ffff, #00ccff);
+      --toggle-bg-dark: rgba(0, 255, 204, 0.1);
+      --toggle-border-dark: 1px solid rgba(0, 255, 204, 0.4);
+      --toggle-shadow-dark: 0 0 15px rgba(0, 255, 204, 0.3);
+      --history-bg-dark: rgba(0, 0, 0, 0.3);
+      --history-border-dark: 1px solid rgba(0, 255, 204, 0.1);
+      --history-color-dark: rgba(0, 255, 204, 0.8);
+      --history-divider-dark: 1px dashed rgba(0, 255, 204, 0.2);
+      --clear-history-bg-dark: rgba(255, 0, 0, 0.3);
+      --clear-history-hover-dark: rgba(255, 0, 0, 0.6);
+
+      /* Variables pour le mode clair (Blanc, Bleu, Rouge) */
+      --bg-gradient-light: linear-gradient(135deg, #e0f2f7, #ffffff);
+      --main-text-color-light: #333;
+      --accent-color-light: #007bff; /* Bleu principal */
+      --container-bg-light: rgba(255, 255, 255, 0.9);
+      --container-border-light: 1px solid rgba(0, 123, 255, 0.2);
+      --container-shadow-light: 0 0 40px rgba(0, 123, 255, 0.2);
+      --result-bg-light: #f0f0f0;
+      --result-shadow-light: inset 0 0 5px rgba(0, 0, 0, 0.1);
+      --math-display-color-light: #666;
+      --button-bg-light: linear-gradient(to bottom right, #f0f0f0, #e0e0e0);
+      --button-hover-light: linear-gradient(to top left, #e0e0e0, #d0d0d0);
+      --operator-bg-light: linear-gradient(to bottom right, #ff6347, #e0523e); /* Rouge tomate */
+      --operator-hover-light: linear-gradient(to top left, #e0523e, #ff6347);
+      --function-bg-light: linear-gradient(to bottom right, #4169e1, #365ac1); /* Bleu royal */
+      --function-hover-light: linear-gradient(to top left, #365ac1, #4169e1);
+      --calc-btn-bg-light: linear-gradient(to bottom right, #28a745, #218838); /* Vert succès */
+      --calc-btn-hover-light: linear-gradient(to top left, #218838, #28a745);
+      --toggle-bg-light: rgba(0, 123, 255, 0.1);
+      --toggle-border-light: 1px solid rgba(0, 123, 255, 0.4);
+      --toggle-shadow-light: 0 0 15px rgba(0, 123, 255, 0.3);
+      --history-bg-light: rgba(240, 240, 240, 0.8);
+      --history-border-light: 1px solid rgba(0, 0, 0, 0.1);
+      --history-color-light: #555;
+      --history-divider-light: 1px dashed rgba(0, 0, 0, 0.1);
+      --clear-history-bg-light: rgba(255, 99, 71, 0.6);
+      --clear-history-hover-light: rgba(255, 99, 71, 0.8);
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-gradient-dark);
+      color: var(--main-text-color-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.5s ease, color 0.5s ease; /* Transition douce */
+    }
+
+    /* Effet d'étoiles en arrière-plan */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgODAwIDgwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZmlsdGVyIGlkPSJub2lzZSIgeD0iMCIgeT0iMCI+CiAgICA8ZmVUdXJidWJsZW5jZSB0eXBlPSJ0dXJidWxlbnRpbmZyYWN0YWwiIGJhc2VGcmVxdWVuY3k9IjAuNSIgbnVtT2N0YXZlcz0iMiIgc2VhbT0ic2VhbW5vbmUiIGlkPSJnZW5lcmF0b3IiPgogICAgPC9mZVR1cmJ1bHVuY2U+CiAgICA8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwICAgICAgICAgMCAwIDAgMCAwICAgICAgICAgMCAwIDAgMCAwICAgICAgICAgMCAwIDAgLjUgMCIgLz4KICA8L2ZpbHRlcj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI25vaXNlKSIgLz4KPC9zdmc+') repeat;
+      opacity: 0.1;
+      animation: starfield 60s linear infinite;
+      z-index: 0; /* Assure que les étoiles sont derrière tout */
+    }
+
+    @keyframes starfield {
+      from { background-position: 0 0; }
+      to { background-position: -10000px -10000px; }
+    }
+
+    body.light-mode {
+      background: var(--bg-gradient-light);
+      color: var(--main-text-color-light);
+    }
+
+    body.light-mode::before {
+      display: none; /* Cache l'effet d'étoiles en mode clair */
+    }
+
+    .container {
+      background-color: var(--container-bg-dark);
+      backdrop-filter: blur(10px);
+      border: var(--container-border-dark);
+      padding: 25px;
+      border-radius: 20px;
+      width: 380px; /* Taille adaptée */
+      box-shadow: var(--container-shadow-dark);
+      margin-top: 30px;
+      position: relative;
+      z-index: 10;
+      transition: background-color 0.5s ease, border 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    body.light-mode .container {
+      background-color: var(--container-bg-light);
+      border: var(--container-border-light);
+      box-shadow: var(--container-shadow-light);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      color: var(--accent-color-dark);
+      text-shadow: 0 0 10px var(--accent-color-dark);
+      margin-bottom: 20px;
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+    }
+
+    body.light-mode h1 {
+      color: var(--accent-color-light);
+      text-shadow: none;
+    }
+
+    #result {
+      width: calc(100% - 20px);
+      font-family: 'Share Tech Mono', monospace; /* Police monospace pour les chiffres */
+      font-size: 38px; /* Encore plus grand */
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      background-color: var(--result-bg-dark);
+      color: var(--main-text-color-dark);
+      text-align: right;
+      box-shadow: var(--result-shadow-dark);
+      outline: none;
+      transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    body.light-mode #result {
+      background-color: var(--result-bg-light);
+      color: var(--main-text-color-light);
+      box-shadow: var(--result-shadow-light);
+    }
+
+    #mathDisplay {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 18px;
+      min-height: 25px;
+      margin-bottom: 15px;
+      text-align: right;
+      color: var(--math-display-color-dark);
+      transition: color 0.5s ease;
+    }
+
+    body.light-mode #mathDisplay {
+      color: var(--math-display-color-light);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      padding: 18px;
+      font-size: 18px;
+      border: none;
+      border-radius: 15px;
+      background: var(--button-bg-dark);
+      color: var(--main-text-color-dark);
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 255, 204, 0.2);
+      transition: all 0.2s ease-in-out, background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+      min-width: 0; /* Permet aux boutons de se réduire sur de petits écrans */
+    }
+
+    button:hover {
+      background: var(--button-hover-dark);
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 255, 204, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(0, 255, 204, 0.4);
+    }
+
+    body.light-mode button {
+      background: var(--button-bg-light);
+      color: var(--main-text-color-light);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode button:hover {
+      background: var(--button-hover-light);
+      color: var(--main-text-color-light); /* Texte noir au survol */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .operator {
+      background: var(--operator-bg-dark);
+      color: white;
+    }
+
+    .operator:hover {
+      background: var(--operator-hover-dark);
+      color: #000;
+    }
+
+    body.light-mode .operator {
+      background: var(--operator-bg-light);
+      color: white;
+    }
+
+    body.light-mode .operator:hover {
+      background: var(--operator-hover-light);
+      color: white;
+    }
+
+    .function-btn {
+      background: var(--function-bg-dark);
+      color: #fff;
+      font-size: 16px;
+      padding: 15px 10px; /* Ajustement pour le texte plus petit */
+    }
+
+    .function-btn:hover {
+      background: var(--function-hover-dark);
+      color: #000;
+    }
+
+    body.light-mode .function-btn {
+      background: var(--function-bg-light);
+      color: white;
+    }
+
+    body.light-mode .function-btn:hover {
+      background: var(--function-hover-light);
+      color: white;
+    }
+
+    #calculate-btn {
+      grid-column: span 2;
+      background: var(--calc-btn-bg-dark);
+      color: white;
+      font-size: 24px;
+    }
+
+    #calculate-btn:hover {
+      background: var(--calc-btn-hover-dark);
+      color: #000;
+    }
+
+    body.light-mode #calculate-btn {
+      background: var(--calc-btn-bg-light);
+      color: white;
+    }
+
+    body.light-mode #calculate-btn:hover {
+      background: var(--calc-btn-hover-light);
+      color: white;
+    }
+
+    #themeToggle {
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      background-color: var(--toggle-bg-dark);
+      color: var(--main-text-color-dark);
+      border: var(--toggle-border-dark);
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease-in-out, background-color 0.5s ease, color 0.5s ease, border 0.5s ease, box-shadow 0.5s ease;
+      z-index: 10; /* Assure que le bouton est au-dessus des étoiles */
+    }
+
+    #themeToggle:hover {
+      background-color: rgba(0, 255, 204, 0.3);
+      color: #000;
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.6);
+    }
+
+    body.light-mode #themeToggle {
+      background-color: var(--toggle-bg-light);
+      color: var(--accent-color-light);
+      border: var(--toggle-border-light);
+      box-shadow: var(--toggle-shadow-light);
+    }
+
+    body.light-mode #themeToggle:hover {
+      background-color: rgba(0, 123, 255, 0.3);
+      color: white;
+      box-shadow: 0 0 25px rgba(0, 123, 255, 0.6);
+    }
+
+    #history {
+      margin-top: 20px;
+      font-size: 14px;
+      max-height: 120px;
+      overflow-y: auto;
+      background-color: var(--history-bg-dark);
+      padding: 10px;
+      border-radius: 10px;
+      border: var(--history-border-dark);
+      color: var(--history-color-dark);
+      transition: background-color 0.5s ease, border 0.5s ease, color 0.5s ease;
+    }
+
+    #history div {
+      padding: 5px 0;
+      border-bottom: var(--history-divider-dark);
+    }
+
+    #history div:last-child {
+      border-bottom: none;
+    }
+
+    body.light-mode #history {
+      background-color: var(--history-bg-light);
+      border: var(--history-border-light);
+      color: var(--history-color-light);
+    }
+
+    body.light-mode #history div {
+      border-bottom: var(--history-divider-light);
+    }
+
+    .clear-history-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: var(--clear-history-bg-dark);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s, background 0.5s ease;
+    }
+
+    .clear-history-btn:hover {
+      background-color: var(--clear-history-hover-dark);
+    }
+
+    body.light-mode .clear-history-btn {
+      background-color: var(--clear-history-bg-light);
+    }
+
+    body.light-mode .clear-history-btn:hover {
+      background-color: var(--clear-history-hover-light);
+    }
+
+    /* Media Queries pour la responsivité */
+    @media (max-width: 480px) {
+      .container {
+        width: 95%; /* Prend presque toute la largeur sur petits écrans */
+        padding: 15px;
+      }
+      #result {
+        font-size: 32px;
+        padding: 10px;
+      }
+      button {
+        font-size: 16px;
+        padding: 12px;
+        border-radius: 10px;
+      }
+      .function-btn {
+        font-size: 14px;
+        padding: 10px 5px;
+      }
+      #calculate-btn {
+        font-size: 20px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      #themeToggle {
+        font-size: 14px;
+        padding: 10px 15px;
+      }
+      #history {
+        font-size: 12px;
+      }
+    }
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <button id="themeToggle">☀️ Mode Clair</button>
+
+  <div class="container">
+    <h1>Calculatrice d'Eliezer Dzama</h1>
+    <input type="text" id="result" placeholder="0" readonly />
+    <div id="mathDisplay"></div>
+    <div class="buttons">
+      <button class="function-btn" onclick="clearResult()">C</button>
+      <button class="operator" onclick="appendValue('(')">(</button>
+      <button class="operator" onclick="appendValue(')')">)</button>
+      <button class="operator" onclick="delChar()">⌫</button>
+      <button class="function-btn" onclick="appendValue('Math.PI')">π</button>
+
+      <button onclick="appendValue('7')">7</button>
+      <button onclick="appendValue('8')">8</button>
+      <button onclick="appendValue('9')">9</button>
+      <button class="operator" onclick="appendValue('/')">÷</button>
+      <button class="function-btn" onclick="appendValue('Math.E')">e</button>
+
+      <button onclick="appendValue('4')">4</button>
+      <button onclick="appendValue('5')">5</button>
+      <button onclick="appendValue('6')">6</button>
+      <button class="operator" onclick="appendValue('*')">×</button>
+      <button class="function-btn" onclick="appendValue('Math.abs(')">|x|</button>
+
+      <button onclick="appendValue('1')">1</button>
+      <button onclick="appendValue('2')">2</button>
+      <button onclick="appendValue('3')">3</button>
+      <button class="operator" onclick="appendValue('-')">−</button>
+      <button class="function-btn" onclick="appendValue('Math.log(')">ln</button>
+
+      <button onclick="appendValue('0')">0</button>
+      <button onclick="appendValue('.')">.</button>
+      <button class="function-btn" onclick="insertAns()">Ans</button>
+      <button class="operator" onclick="appendValue('+')">+</button>
+      <button class="function-btn" onclick="appendValue('Math.log10(')">log</button>
+
+      <button class="function-btn" onclick="appendValue('Math.pow(')">xʸ</button>
+      <button class="function-btn" onclick="appendValue('Math.sqrt(')">√</button>
+      <button class="function-btn" onclick="appendValue('Math.sin(')">sin</button>
+      <button class="function-btn" onclick="appendValue('Math.cos(')">cos</button>
+      <button class="function-btn" onclick="appendValue('Math.tan(')">tan</button>
+
+      <button class="function-btn" onclick="appendValue('Math.asin(')">asin</button>
+      <button class="function-btn" onclick="appendValue('Math.acos(')">acos</button>
+      <button class="function-btn" onclick="appendValue('Math.atan(')">atan</button>
+      <button class="function-btn" onclick="factorial()">x!</button>
+      <button id="calculate-btn" onclick="calculate()">=</button>
+    </div>
+    <div id="history"></div>
+    <button class="clear-history-btn" onclick="clearHistory()">Effacer Historique</button>
+  </div>
+
+  <script>
+    let lastAns = 0;
+    let historyLog = [];
+    let currentInput = '';
+    let currentTheme = 'dark'; // Ajout d'une variable pour suivre le thème
+
+    function appendValue(value) {
+      currentInput += value;
+      document.getElementById('result').value = currentInput;
+      updateMathDisplay();
+    }
+
+    function clearResult() {
+      currentInput = '';
+      document.getElementById('result').value = '';
+      document.getElementById('mathDisplay').innerHTML = '';
+    }
+
+    function delChar() {
+      currentInput = currentInput.slice(0, -1);
+      document.getElementById('result').value = currentInput;
+      updateMathDisplay();
+    }
+
+    function insertAns() {
+      appendValue(lastAns);
+    }
+
+    function formatForMathJax(expr) {
+        expr = expr.replace(/\*\*/g, '^');
+        expr = expr.replace(/\*/g, '\\times');
+        expr = expr.replace(/\//g, '\\div');
+        expr = expr.replace(/Math\.pow\(([^,]+),([^)]+)\)/g, '{$1}^{$2}');
+        expr = expr.replace(/Math\.sqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+        expr = expr.replace(/Math\.sin\(([^)]+)\)/g, '\\sin($1)');
+        expr = expr.replace(/Math\.cos\(([^)]+)\)/g, '\\cos($1)');
+        expr = expr.replace(/Math\.tan\(([^)]+)\)/g, '\\tan($1)');
+        expr = expr.replace(/Math\.asin\(([^)]+)\)/g, '\\arcsin($1)');
+        expr = expr.replace(/Math\.acos\(([^)]+)\)/g, '\\arccos($1)');
+        expr = expr.replace(/Math\.atan\(([^)]+)\)/g, '\\arctan($1)');
+        expr = expr.replace(/Math\.log\(([^)]+)\)/g, '\\ln($1)');
+        expr = expr.replace(/Math\.log10\(([^)]+)\)/g, '\\log_{10}($1)');
+        expr = expr.replace(/Math\.abs\(([^)]+)\)/g, '|{$1}|');
+        expr = expr.replace(/Math\.PI/g, '\\pi');
+        expr = expr.replace(/Math\.E/g, 'e');
+        return expr;
+    }
+
+    function updateMathDisplay() {
+        let displayExpr = formatForMathJax(currentInput);
+        document.getElementById('mathDisplay').innerHTML = `\\(${displayExpr}\\)`;
+        MathJax.typeset();
+    }
+
+    function factorial() {
+        const match = currentInput.match(/(\d+\.?\d*)$/);
+        if (match) {
+            let num = parseInt(match[1]);
+            if (num < 0 || !Number.isInteger(num)) {
+                alert("La factorielle n'est définie que pour les entiers positifs ou nuls.");
+                return;
+            }
+            if (num > 20) {
+                alert("Nombre trop grand pour la factorielle (max 20 pour éviter les débordements).");
+                return;
+            }
+            let res = 1;
+            for (let i = 2; i <= num; i++) {
+                res *= i;
+            }
+            currentInput = currentInput.slice(0, -match[1].length) + res;
+            document.getElementById('result').value = currentInput;
+            updateMathDisplay();
+        } else {
+            alert("Veuillez entrer un nombre avant d'utiliser la fonction factorielle.");
+        }
+    }
+
+    function calculate() {
+      try {
+        let expressionToEvaluate = currentInput
+            .replace(/÷/g, '/')
+            .replace(/×/g, '*')
+            .replace(/⁻/g, '-');
+
+        // Évaluation de l'expression
+        let res = eval(expressionToEvaluate);
+
+        if (isNaN(res) || !isFinite(res)) {
+            throw new Error("Résultat invalide");
+        }
+
+        lastAns = res;
+        document.getElementById('result').value = res;
+        document.getElementById('mathDisplay').innerHTML = `\\(${formatForMathJax(currentInput)} = ${res}\\)`;
+        MathJax.typesetPromise().then(() => {
+            speakResult(res);
+            addToHistory(currentInput + ' = ' + res);
+        });
+        currentInput = res.toString();
+      } catch (e) {
+        document.getElementById('result').value = 'Erreur';
+        document.getElementById('mathDisplay').innerHTML = '\\(Erreur\\)';
+        speakResult("Erreur de calcul.");
+        currentInput = '';
+      }
+    }
+
+    function addToHistory(entry) {
+      historyLog.push(entry);
+      if (historyLog.length > 10) {
+        historyLog.shift();
+      }
+      displayHistory();
+    }
+
+    function displayHistory() {
+        document.getElementById('history').innerHTML = historyLog
+            .slice().reverse()
+            .map(r => `<div>${r}</div>`)
+            .join('');
+        MathJax.typesetPromise();
+    }
+
+    function clearHistory() {
+        historyLog = [];
+        displayHistory();
+    }
+
+    function speakResult(result) {
+      const synth = window.speechSynthesis;
+      if (!synth) {
+        console.warn("API SpeechSynthesis non supportée par ce navigateur.");
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance("Le résultat est " + result);
+      utter.lang = 'fr-FR';
+      synth.speak(utter);
+    }
+
+    // Gestion du thème
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            document.body.classList.add('light-mode');
+            document.getElementById('themeToggle').textContent = '🌙 Mode Sombre';
+            currentTheme = 'light';
+        } else {
+            document.body.classList.remove('light-mode');
+            document.getElementById('themeToggle').textContent = '☀️ Mode Clair';
+            currentTheme = 'dark';
+        }
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      // Bascule le thème actuel
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    // Initialisation du thème au chargement
+    // Vérifie la préférence système, mais permet aussi le changement manuel
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (prefersLight) {
+        applyTheme('light');
+    } else {
+        applyTheme('dark');
+    }
+
+
+    document.getElementById('result').addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
+  </script>
+</body>
+</html>
